@@ -9,6 +9,7 @@ public class MainThread implements Runnable {
 	private Canvas canvas;
 	private Graphics g;
 	private BufferStrategy bufferStrategy;
+	private FPS fps = new FPS();
 
 	public MainThread(Canvas canvas) {
 		this.canvas = canvas;
@@ -24,10 +25,16 @@ public class MainThread implements Runnable {
 	public void run() {
 		init();
 		while (true) {
-			System.out.println("run");
+			fps.updateFPS();
 			g.setColor(Color.black);
 			g.drawRect(0, 0, 10, 10);
 			bufferStrategy.show();
+
+			try {
+				Thread.sleep(fps.getSleepmillis());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 package main;
 
-public class Fps {
+public class FPS {
 	private long oldMillis = System.currentTimeMillis();
 	private int frames = 0;
 	private long fps = 60;
