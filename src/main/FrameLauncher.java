@@ -4,12 +4,13 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
 
+
 public class FrameLauncher extends Frame{
 	private static final long serialVersionUID = 1L;
 	Canvas mainCanvas = new Canvas();
 	Dimension size = new Dimension(640, 480);
 	FPS fps = new FPS();
-	Runnable mainThread = new MainThread(mainCanvas);
+	Runnable mainThread = new MainThread(mainCanvas,size);
 
 	public static void main(String[] args) {
 		new FrameLauncher();
@@ -20,10 +21,9 @@ public class FrameLauncher extends Frame{
 		System.out.println("Starting in frame");
 		setVisible(true);
 		setSize(size);
+		mainCanvas.createBufferStrategy(2);
 		mainCanvas.setSize(size);
 		add(mainCanvas);
-		mainCanvas.createBufferStrategy(2);
-		pack();
 		mainThread.run();
 
 	}

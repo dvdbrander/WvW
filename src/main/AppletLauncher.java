@@ -9,15 +9,16 @@ public class AppletLauncher extends Applet{
 	Canvas mainCanvas = new Canvas();
 	Dimension size = new Dimension(640, 480);
 	FPS fps = new FPS();
-	Runnable mainThread = new MainThread(mainCanvas);
+	Runnable mainThread = new MainThread(mainCanvas,size);
 	
 	@Override
 	public void init() {
 		System.out.println("Starting in applet");
+		setVisible(true);
 		setSize(size);
 		mainCanvas.setSize(size);
-		add(mainCanvas);
 		mainCanvas.createBufferStrategy(2);
+		add(mainCanvas);
 		mainThread.run();
 		super.init();
 	}
