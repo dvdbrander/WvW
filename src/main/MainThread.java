@@ -1,28 +1,32 @@
 package main;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-public class MainThread implements Runnable {
-	private Canvas canvas;
-	private Graphics g;
+import javax.swing.JPanel;
+
+public class MainThread extends JPanel implements Runnable{
+	private static final long serialVersionUID = -1804148473991244440L;
+	private JPanel canvas;
 	private FPS fps = new FPS();
 	private Dimension size;
+	private int width, height;
 	private int timer = 0;
-	private int width,height;
+	private Graphics g;
 
-	public MainThread(Canvas canvas, Dimension size) {
-		this.canvas = canvas;
+	public MainThread(Dimension size) {
+		this.canvas = this;
 		this.size = size;
-		width = ((Double)size.getWidth()).intValue();
-		height = ((Double)size.getHeight()).intValue();
+		setSize(size);
 	}
 
 	public void init() {
-		g = canvas.getBufferStrategy().getDrawGraphics();
 		canvas.setSize(size);
+		canvas.setVisible(true);
+		width = ((Double)size.getWidth()).intValue();
+		height = ((Double)size.getHeight()).intValue();
+		g = canvas.getGraphics();
 	}
 
 	@Override
@@ -30,29 +34,35 @@ public class MainThread implements Runnable {
 		init();
 		while (true) {
 			fps.updateFPS();
-			g.setColor(Color.white);
-			g.fillRect(0, 0, width, height);
-			g.setColor(Color.black);
+			repaint();
 			
-			if (timer <= 60) {
-				for (int x = 0; x <= 480; x += 10) {
-					g.drawRect(x, x, 10, 10);
-				}
-			} else {
-				for (int x = 0; x <= 480; x += 10) {
-					g.drawRect(x, 480 - x, 10, 10);
-				}
-			}
-			timer ++;
-			if (timer >= 120){
-				timer = 0;
-			}
-
 			try {
 				Thread.sleep(fps.getSleepmillis());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.setColor(Color.white);
+		g.fillRect(0, 0, width, height);
+		g.setColor(Color.black);
+		
+		if (timer  <= 60) {
+			for (int x = 0; x <= 480; x += 10) {
+				g.drawRect(x, x, 10, 10);
+			}
+		} else {
+			for (int x = 0; x <= 480; x += 10) {
+				g.drawRect(x, 480 - x, 10, 10);
+			}
+		}
+		timer ++;
+		if (timer >= 120){
+			timer = 0;
 		}
 	}
 

@@ -1,24 +1,23 @@
 package main;
 
 import java.applet.Applet;
-import java.awt.Canvas;
 import java.awt.Dimension;
+
+import javax.swing.JPanel;
 
 public class AppletLauncher extends Applet{
 	private static final long serialVersionUID = 1L;
-	Canvas mainCanvas = new Canvas();
 	Dimension size = new Dimension(640, 480);
 	FPS fps = new FPS();
-	Runnable mainThread = new MainThread(mainCanvas,size);
+	Runnable mainThread = new MainThread(size);
 	
 	@Override
 	public void init() {
 		System.out.println("Starting in applet");
 		setVisible(true);
 		setSize(size);
-		mainCanvas.setSize(size);
-		mainCanvas.createBufferStrategy(2);
-		add(mainCanvas);
+		add((JPanel) mainThread);
+//		mainCanvas.createBufferStrategy(2);
 		mainThread.run();
 		super.init();
 	}
