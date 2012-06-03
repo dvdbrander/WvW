@@ -1,4 +1,4 @@
-package main;
+package launcher;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,6 @@ public class MainThread extends JPanel implements Runnable{
 	private Dimension size;
 	private int width, height;
 	private int timer = 0;
-	private Graphics g;
 
 	public MainThread(Dimension size) {
 		this.canvas = this;
@@ -26,7 +25,6 @@ public class MainThread extends JPanel implements Runnable{
 		canvas.setVisible(true);
 		width = ((Double)size.getWidth()).intValue();
 		height = ((Double)size.getHeight()).intValue();
-		g = canvas.getGraphics();
 	}
 
 	@Override

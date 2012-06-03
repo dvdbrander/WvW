@@ -1,10 +1,10 @@
-package main;
+package launcher;
 
 public class FPS {
 	private long oldMillis = System.currentTimeMillis();
 	private int frames = 0;
 	private long fps = 60;
-	private int sleepmillis = 15;
+	private int sleepmillis = 17;
 	
 	void updateFPS(){
 		if (System.currentTimeMillis() - oldMillis >= 1000) {
