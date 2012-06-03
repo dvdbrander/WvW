@@ -3,8 +3,11 @@ package launcher;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JPanel;
+
+import online.Online;
 
 public class MainThread extends JPanel implements Runnable{
 	private static final long serialVersionUID = -1804148473991244440L;
@@ -13,6 +16,9 @@ public class MainThread extends JPanel implements Runnable{
 	private Dimension size;
 	private int width, height;
 	private int timer = 0;
+	private Online online = new Online(this);
+	private CopyOnWriteArrayList<GameObject> gameObjects = new CopyOnWriteArrayList<GameObject>();
+	private boolean run = true;
 
 	public MainThread(Dimension size) {
 		this.canvas = this;
@@ -25,14 +31,19 @@ public class MainThread extends JPanel implements Runnable{
 		canvas.setVisible(true);
 		width = ((Double)size.getWidth()).intValue();
 		height = ((Double)size.getHeight()).intValue();
+		getGameObjects().add(online);
+		online.init();
 	}
 
 	@Override
 	public void run() {
 		init();
-		while (true) {
+		while (isRunning() ) {
 			fps.updateFPS();
 			repaint();
+			for (GameObject object:gameObjects){
+				object.update();
+			}
 			
 			try {
 				Thread.sleep(fps.getSleepmillis());
@@ -62,6 +73,22 @@ public class MainThread extends JPanel implements Runnable{
 		if (timer >= 120){
 			timer = 0;
 		}
+	}
+
+	public CopyOnWriteArrayList<GameObject> getGameObjects() {
+		return gameObjects;
+	}
+
+	public void setGameObjects(CopyOnWriteArrayList<GameObject> gameObjects) {
+		this.gameObjects = gameObjects;
+	}
+
+	public boolean isRunning() {
+		return run;
+	}
+
+	public void setRunning(boolean run) {
+		this.run = run;
 	}
 
 }
