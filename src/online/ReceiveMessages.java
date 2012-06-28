@@ -12,7 +12,7 @@ public class ReceiveMessages {
 	}
 
 	public void ping(String[] stringArray) {
-		connection.setLastPing(System.currentTimeMillis() - Long.parseLong(stringArray[1]));
+		connection.setLastPing(System.currentTimeMillis() - Long.parseLong(stringArray[2]));
 		connection.getSendMessages().ping();
 	}
 
