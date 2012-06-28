@@ -1,31 +1,59 @@
 package online;
 
+import java.io.PrintWriter;
+import java.util.concurrent.ConcurrentHashMap;
+
 import launcher.GameObject;
 import launcher.MainThread;
 
 public class Online extends GameObject{
-	private Connection connection = new Connection();
-	private MainThread main;
-	
 	public Online(MainThread main) {
-		this.main = main;
+		super(main);
 	}
+
+	private Connection connection = new Connection();
+	public PrintWriter out;
+	
 	
 	@Override
 	public void init(){
-		connection.init(this, main);
+		getConnection().init(this, main);
 		connect();
 		super.init();
 	}
 	
 	public void connect(){
-		connection.connect();
-		((Thread)connection).start();
+		getConnection().connect();
+		((Thread)getConnection()).start();
+		out = getConnection().getOut();
 	}
 	
 	@Override
 	public void update() {
-		
+		ConcurrentHashMap<Integer, GameObject> gameObjects = main.getGameObjects();
+		for (GameObject object:gameObjects.values()){
+			if (object.getSync()){
+				String string = "4|0|"+connection.id;
+				for (Object obj: object.getToSync()){
+					string += "|";
+					string += obj.toString();
+				}
+				getConnection().getOut().println(string);
+			}
+		}
 		super.update();
 	}
+	
+	public long getPing() {
+		return getConnection().getLastPing();
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
 }

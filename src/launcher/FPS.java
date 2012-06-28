@@ -5,6 +5,10 @@ public class FPS {
 	private int frames = 0;
 	private long fps = 60;
 	private int sleepmillis = 17;
+	private MainThread main;
+	public FPS(MainThread main) {
+		this.main = main;
+	}
 	
 	void updateFPS(){
 		if (System.currentTimeMillis() - oldMillis >= 1000) {
@@ -17,7 +21,9 @@ public class FPS {
 			} else if (getFps() > 65) {
 				setSleepmillis(getSleepmillis() + 1);
 			}
-			System.out.println(getFps());
+			System.out.println("FPS:"+getFps()+"|Ping:"+main.online.getPing()+"|ID:"+main.online.getConnection().id);
+			if (main.online.getConnection().id == -1)
+				main.online.getConnection().getSendMessages().getID();
 		}
 		frames++;
 	}

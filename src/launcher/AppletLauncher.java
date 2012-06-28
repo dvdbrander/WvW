@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 public class AppletLauncher extends Applet{
 	private static final long serialVersionUID = 1L;
 	Dimension size = new Dimension(640, 480);
-	FPS fps = new FPS();
 	Runnable mainThread = new MainThread(size);
 	
 	@Override

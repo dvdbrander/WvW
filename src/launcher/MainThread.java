@@ -1,38 +1,59 @@
 package launcher;
 
+import graphics.ImageLoader;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JPanel;
 
 import online.Online;
-
-public class MainThread extends JPanel implements Runnable{
+import players.Player;
+/*	Package id's: 
+ * 1: ping
+ * 2: player's position
+ * 3: new player
+ * 4: getting player's ID
+ * 
+ * */
+public class MainThread extends JPanel implements Runnable, KeyListener{
 	private static final long serialVersionUID = -1804148473991244440L;
-	private JPanel canvas;
-	private FPS fps = new FPS();
+	private JPanel panel;
+	private FPS fps = new FPS(this);
 	private Dimension size;
 	private int width, height;
 	private int timer = 0;
-	private Online online = new Online(this);
-	private CopyOnWriteArrayList<GameObject> gameObjects = new CopyOnWriteArrayList<GameObject>();
+	public Online online = new Online(this);
+	private ConcurrentHashMap<Integer,GameObject> gameObjects = new ConcurrentHashMap<Integer,GameObject>();
 	private boolean run = true;
+	public ImageLoader imgLoader = new ImageLoader(this);
+	boolean[] keys = new boolean[525];
+	
 
 	public MainThread(Dimension size) {
-		this.canvas = this;
+		this.setPanel(this);
 		this.size = size;
 		setSize(size);
 	}
 
 	public void init() {
-		canvas.setSize(size);
-		canvas.setVisible(true);
+		getPanel().setSize(size);
+		getPanel().setVisible(true);
+		getPanel().setFocusable(true);
+		getPanel().requestFocusInWindow();
 		width = ((Double)size.getWidth()).intValue();
 		height = ((Double)size.getHeight()).intValue();
-		getGameObjects().add(online);
+		addGameObject(online);
 		online.init();
+		Player player = new Player(this);
+		addGameObject(player);
+		player.init();
+		getPanel().addKeyListener(this);
+		System.out.println("Initialized");
 	}
 
 	@Override
@@ -41,7 +62,7 @@ public class MainThread extends JPanel implements Runnable{
 		while (isRunning() ) {
 			fps.updateFPS();
 			repaint();
-			for (GameObject object:gameObjects){
+			for (GameObject object:gameObjects.values()){
 				object.update();
 			}
 			
@@ -73,13 +94,28 @@ public class MainThread extends JPanel implements Runnable{
 		if (timer >= 120){
 			timer = 0;
 		}
+		
+
+		for (GameObject object:gameObjects.values()){
+			object.paint(g);
+		}
 	}
 
-	public CopyOnWriteArrayList<GameObject> getGameObjects() {
+	public void addGameObject(GameObject object){
+		for (int i=0; true; i += 1){
+			if (!getGameObjects().containsKey(i)){
+				getGameObjects().put(i,object);
+//				object.id = i;
+				break;
+			}
+		}
+	}
+	
+	public ConcurrentHashMap<Integer, GameObject> getGameObjects() {
 		return gameObjects;
 	}
 
-	public void setGameObjects(CopyOnWriteArrayList<GameObject> gameObjects) {
+	public void setGameObjects(ConcurrentHashMap<Integer, GameObject> gameObjects) {
 		this.gameObjects = gameObjects;
 	}
 
@@ -91,4 +127,26 @@ public class MainThread extends JPanel implements Runnable{
 		this.run = run;
 	}
 
+	public JPanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(JPanel canvas) {
+		this.panel = canvas;
+	}
+
+	
+	@Override
+	public void keyPressed(KeyEvent e) {
+		keys[e.getKeyCode()] = true;
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keys[e.getKeyCode()] = false;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+	}
 }
